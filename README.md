@@ -94,6 +94,7 @@ The code is visible between lines 20 and 40 on the 10th cell, and from line 25 o
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 ![DETECTION_IMAGE][./writeup/pipeline.png]
+![alt text][image5]
 
 ---
 
