@@ -59,16 +59,16 @@ Here is, as an example, the result for the final parameters on both car and not 
 
 ![HOG_IMAGE][./writeup/hog_features.png]
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 As recommended in the project, I chose Linear SVC.
 To feed the classifier, I brought together spatial, histogram and HOG features, and normalized it.
 Then using the full image data set, I trained it.
 After trying several parameters combinations, with the selected one I was able to reach once over 99% of successful classification, and always well above 98%. This variation is normal considering that the training set and the test set are always redefined at the beginning of the training.
 
-###Sliding Window Search
+### Sliding Window Search
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 Looking at the test images we can easily see a pattern of what a car is on the images. With that in mind,  a full search over the complete image is useless and time consuming, once cars with a particular size can only be on a limited area of the image. Since there is no cars in the sky (or not yet :) ), at least the top part of the image can be discarded. Then, because the camera is on the top of the car, and it is pointed to the horizon, an acceptable approximation is that all the cars will be leveled by a line that goes around their top. Besides that, the closer the car are the bigger they look on the image.
 
@@ -93,7 +93,7 @@ The code is visible between lines 20 and 40 on the 10th cell, and from line 25 o
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
------DETECTION_IMAGE------![alt text][image1]
+![DETECTION_IMAGE][./writeup/pipeline.png]
 
 ---
 
@@ -112,9 +112,9 @@ Spatial filtering is used on each frame. The trick was to use a threshold level 
 
 On the temporal side I considered the last 10 frames, that corresponds to 0.4 seconds on a video of 25 fps. I defined an object class to help storing detections. Then it was easy to retrieve and update them whenever they were considered as being a matching detection from the previous frames.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+>I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+>Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are six frames and their corresponding heatmaps:
 
@@ -125,8 +125,6 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
 ![alt text][image7]
-
-
 
 ---
 
@@ -143,6 +141,3 @@ An improvement would be to do refined searches on limited small areas of the ima
 In-line with what is required to stand out, this project was not just about doing a good detection, but also on doing it quite fast. Abusing on sliding windows would make it easier to get a better detection, but that would come at a price that would not justify it anymore.
 
 As explained earlier, finding a good balance between detections and speed was the key here. My final choice was using one single line of windows with 160x160 pixels together with another line of 96x96 windows, both with a horizontal overlaping of 75%. That creates 156 windows, and seaching vehicles on them took a total processing time of 8.43 minutes for a total of 1260 frames of the video. That gives us an average of around 4.5 fps, which is not bad for a python code.
-
-
-
