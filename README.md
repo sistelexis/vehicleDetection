@@ -13,16 +13,6 @@ The goals / steps of this project are the following:
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
-[//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
-
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
@@ -55,6 +45,7 @@ cell_per_block = 2
 hog_channel = "ALL" 
 ````
 
+
 Here is, as an example, the result for the final parameters on both car and not car image chosen randomly:
 
 ![hog](./writeup_images/hog_features.png)
@@ -62,9 +53,22 @@ Here is, as an example, the result for the final parameters on both car and not 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 As recommended in the project, I chose Linear SVC.
-To feed the classifier, I brought together spatial, histogram and HOG features, and normalized it.
+To feed the classifier, I brought together spatial, histogram and HOG features, and normalized it:
+
+![full features](./writeup_images/full_features_norm.png)
+
 Then using the full image data set, I trained it.
+
+Details from the data sets:
+
+````
+Car images count: 8792
+Not car images count: 8968
+````
+
 After trying several parameters combinations, with the selected one I was able to reach once over 99% of successful classification, and always well above 98%. This variation is normal considering that the training set and the test set are always redefined at the beginning of the training.
+
+Code: 6th and 4th cell (extract_features funtion) @ [vehicleDetection.ipnb](./vehicleDetection.ipnb) 
 
 ### Sliding Window Search
 
@@ -81,17 +85,23 @@ Unfortunately, for the sake of processing speed I could not afford to use all of
 - 1 line of 160 px high starting at line y=400
 - 1 line of 96 px high starting at line y=404
 
-I also used a 75% overlay of windows on both lines, since it managed to have a better distinguish false detections (that have a more random behavior) from car detections.
+I also used a 75% overlay of windows on both lines, since it managed to have a better distinguish false detections (that have a more random behavior) from car detections. On the following image the windows resulting from this description can be seen:
+
+![sliding windows](./writeup_images/sliding_windows.png)
 
 That solution allowed me to get get good enough results that could be bettered with post processing.
 
 I used the recommended single HOG feature extraction to make the system faster, so instead of resizing the windows to the training size of 64x64 I did a single resize to the full image using a scaling factor, that in other words will have the same effect but will be achieved in the opposite path.
 
-The code is visible between lines 20 and 40 on the 10th cell, and from line 25 of the 7th cell (find_cars_in_image funtion) from this notebook: 
-
-<i class="icon-file"></i> [vehicleDetection.ipnb](./vehicleDetection.ipnb)  
+Code: line 20 to 40 on the 10th cell, and line 25 on the 7th cell (find_cars_in_image funtion) @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)  
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+
+On the following image one can see the full steps on 8 different images.
+- The first column represents the car detections out of the classifier
+- The second represents the heatmap created with the detections from the first column
+- The third column represents the previous column after filtering
+- The last column represents the boudary boxes created out of the blobs provided by the label function over the filtered heatmap from the previous column
 
 ![detections](./writeup_images/pipeline.png)
 
@@ -106,25 +116,17 @@ The thin yellow boxes show the detections out of the classifier. There we can se
 
 The thick red boxes are the tracking results out of the post-processing using spatial and temporal filtering.
 
+The small green circle represents the center of the tracking box used for updating the motion vector of the detections.
+
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 Spatial filtering is used on each frame. The trick was to use a threshold level dependent of the detections (the heatmap had bigger values over the cars with the...). That allowed to achieve a very balanced filtering (avoiding to remove cars or keep to much false positives).
 
+Code: line 75 to 95 on the 10th cell @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)
+
 On the temporal side I considered the last 10 frames, that corresponds to 0.4 seconds on a video of 25 fps. I defined an object class to help storing detections. Then it was easy to retrieve and update them whenever they were considered as being a matching detection from the previous frames.
 
->I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
->Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+Code: line 50 to 55 on 10th the cell @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)
 
 ---
 
