@@ -57,7 +57,7 @@ hog_channel = "ALL"
 
 Here is, as an example, the result for the final parameters on both car and not car image chosen randomly:
 
-![HOG_IMAGE][./writeup/hog_features.png]
+![hog][./writeup_images/hog_features.png]
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -93,7 +93,7 @@ The code is visible between lines 20 and 40 on the 10th cell, and from line 25 o
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-![DETECTION_IMAGE][./writeup/pipeline.png]
+![detections][./writeup_images/pipeline.png]
 ![alt text][image5]
 
 ---
