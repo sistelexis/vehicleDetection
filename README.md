@@ -24,7 +24,7 @@ The goals / steps of this project are the following:
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
 ### Writeup / README
@@ -47,11 +47,13 @@ The code for this step is contained in the third code cell of the following IPyt
 
 I then explored different color spaces and different `skimage.hog()` parameters (*color_space, orient, pixels_per_cell, cells_per_block*), and checked there outputs using images from the provided data set to get a feel for what the `skimage.hog()` output looks like. Those are the parameters I finally selected:
 
-````color_space = 'YCrCb' 
+````
+color_space = 'YCrCb' 
 orient = 9  
 pix_per_cell = 8 
 cell_per_block = 2 
-hog_channel = "ALL" ````
+hog_channel = "ALL" 
+````
 
 Here is, as an example, the result for the final parameters on both car and not car image chosen randomly:
 
