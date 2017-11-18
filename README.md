@@ -31,7 +31,7 @@ In order to extract the HOG features I used the hog function from the skimage.fe
 
 The code for this step is contained in the third code cell of the following IPython notebook, under the *get_hog_features* function:
 
-<i class="icon-file"></i> [vehicleDetection.ipnb](./vehicleDetection.ipnb)  
+<i class="icon-file"></i> [vehicleDetection.ipnb](https://github.com/sistelexis/vehicleDetection/blob/master/vehicleDetection.ipynb)  
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -68,7 +68,7 @@ Not car images count: 8968
 
 After trying several parameters combinations, with the selected one I was able to reach once over 99% of successful classification, and always well above 98%. This variation is normal considering that the training set and the test set are always redefined at the beginning of the training.
 
-Code: 6th and 4th cell (extract_features funtion) @ [vehicleDetection.ipnb](./vehicleDetection.ipnb) 
+Code: 6th and 4th cell (extract_features funtion) @ [vehicleDetection.ipnb](https://github.com/sistelexis/vehicleDetection/blob/master/vehicleDetection.ipynb) 
 
 ### Sliding Window Search
 
@@ -95,7 +95,7 @@ That solution allowed me to get good enough results that could be bettered with 
 
 I used the recommended single HOG feature extraction for the whole frame to make the system faster. That approach is basically doing the same thing but in the opposite path. So, instead of resizing each window to the training size of 64x64, I did a single resize of the full image to be 64 px high.
 
-Code: line 20 to 40 on the 10th cell, and line 25 on the 7th cell (find_cars_in_image funtion) @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)  
+Code: line 20 to 40 on the 10th cell, and line 25 on the 7th cell (find_cars_in_image funtion) @ [vehicleDetection.ipnb](https://github.com/sistelexis/vehicleDetection/blob/master/vehicleDetection.ipynb)  
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -113,8 +113,6 @@ On the following image one can see the full steps on 8 different images.
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result on github](./output_image/output_project_video.mp4) or [this one from youtube](https://youtu.be/4f2-X6OflZ4) (note: github is having issues to upload the video)
 
-https://github.com/sistelexis/vehicleDetection/
-
 The thin yellow boxes show the detections out of the classifier. There we can see that some parts of the image can fool the classifier (like guards, mainly metallic ones over bridges, as well as dark traces over the whiter pavement), but since it mostly happens sporadically, using a valid filtering post-processing I managed to discard the majority of those false positives.
 
 The thick red boxes are the tracking results out of the post-processing using spatial and temporal filtering, and can be considered as the tracking result.
@@ -125,11 +123,11 @@ The small green circle represents the center of the tracking box used for updati
 
 Spatial filtering is used on each frame. The trick was to use a threshold level dependent of the detections (cars tend to be detected more often so the heatmap over them will have higher values). That allowed to achieve a very balanced filtering (avoiding to remove cars or keep to much false positives). That can be seen at the begining of the video when there is no cars, the lack of references doesn't allow the false detections *cleaning* to happen. But as soon as the white Lexus enters on the right side, the false detections are proportionally less important (lower values in the heatmap), and thus discarded and not considered as a tracking anymore.
 
-Code: line 75 to 95 on the 10th cell @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)
+Code: line 75 to 95 on the 10th cell @ [vehicleDetection.ipnb](https://github.com/sistelexis/vehicleDetection/blob/master/vehicleDetection.ipynb)
 
 On the temporal side I considered the last 10 frames, that corresponds to 0.4 seconds on a video of 25 fps. I defined an object class to help storing detections. Then it was easy to retrieve and update them whenever they were considered as being a matching detection from the previous frames.
 
-Code: line 50 to 55 on 10th the cell @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)
+Code: line 50 to 55 on 10th the cell @ [vehicleDetection.ipnb](https://github.com/sistelexis/vehicleDetection/blob/master/vehicleDetection.ipynb)
 
 ---
 
