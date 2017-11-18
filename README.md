@@ -106,7 +106,6 @@ On the following image one can see the full steps on 8 different images.
 - The last column represents the boudary boxes created out of the blobs provided by the label function over the filtered heatmap from the previous column
 
 ![detections](./writeup_images/pipeline.png)
-
 ---
 
 ### Video Implementation
@@ -114,7 +113,7 @@ On the following image one can see the full steps on 8 different images.
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result](./output_image/output_project_video_completed.mp4)
 
-The thin yellow boxes show the detections out of the classifier. There we can see that some parts of the image can fool the classifier (like guards, mainly metalic ones over bridges, as well as dark traces over the whiter pavement), but since it mostly happens sporadically, using a valid filtering post-processing I managed to discard the majority of those false positives.
+The thin yellow boxes show the detections out of the classifier. There we can see that some parts of the image can fool the classifier (like guards, mainly metallic ones over bridges, as well as dark traces over the whiter pavement), but since it mostly happens sporadically, using a valid filtering post-processing I managed to discard the majority of those false positives.
 
 The thick red boxes are the tracking results out of the post-processing using spatial and temporal filtering, and can be considered as the tracking result.
 
@@ -140,9 +139,9 @@ The most tricky parts (besides getting a bug free code when we are working late 
 
 It would have been easy to avoid looking to the left side of the image, but that would create a failure if we move the car to the right lanes (where it should have always been based, at least, on European laws :) ).
 
-Bigger weaknesses of this system is when the car is passing by metalic guard rails and also tire marks on brighter pavements. That seems to really fool the system, and I believe the solution must be on getting an improved data set, since the detections of those features are longer in time and space, and thus hard to eliminate with both spatial and temporal filtering.
+Bigger weaknesses of this system is when the car is passing by metallic rail guards and also tire marks on brighter pavements. That seems to really fool the system, and I believe the solution must be on getting an improved data set, since the detections of those features are longer in time and space, and thus hard to fully eliminate with both spatial and temporal filtering.
 
-An improvement would be to do refined searches on limited small areas of the image where it would be expected to have a car based on the previous images. For that I added a variable (move) on the detection object to store the motion vector calculated using the detection centers from all the consecutive matches.  
+An improvement would be to do refined searches on limited small areas of the image, with smaller windows, where it would be expected to have a car based on the previous images. For that I added a variable (move) on the detection object to store the motion vector calculated using the detection centers from all the consecutive matches.  
 
 In-line with what is required to stand out, this project was not just about doing a good detection, but also on doing it quite fast. Abusing on sliding windows would make it easier to get a better detection, but that would come at a price that would not justify it anymore.
 
