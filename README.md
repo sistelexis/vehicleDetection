@@ -74,24 +74,26 @@ Code: 6th and 4th cell (extract_features funtion) @ [vehicleDetection.ipnb](./ve
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-Looking at the test images we can easily see a pattern of what a car is on the images. With that in mind,  a full search over the complete image is useless and time consuming, once cars with a particular size can only be on a limited area of the image. Since there is no cars in the sky (or not yet :) ), at least the top part of the image can be discarded. Then, because the camera is on the top of the car, and it is pointed to the horizon, an acceptable approximation is that all the cars will be leveled by a line that goes around their top. Besides that, the closer the car are the bigger they look on the image.
+Looking at the test images we can easily see a pattern of what a car is on the images. With that in mind, it was easy to understand that a full search over the complete image is useless and time consuming, once cars with a particular size can only be on a limited area of the image.
 
-So my idea was to consider single lines of different windows size leveled (roughly, since I just change it in few pixels). That way, thinner lines would detect smaller/farther cars while thicker lines would detect bigger/closer cars.
+Since there is no cars in the sky (or not yet :-) ), at least the top part of the image can be discarded. Then, because the camera is on the top of the car, and it is pointing to the horizon, an acceptable approximation is that all the cars will be leveled by a line that goes around their tops. Besides that, the closer the car are the bigger they look on the image.
 
-So I started testing my idea using lines with 256 pixels high down to 32 px by steps of 32 px, and started getting a better picture of what which could achieve.
+So my idea was to consider single lines of different window sizes leveled at the top (roughly, since I just change it in few pixels). That way, thinner lines would detect smaller/farther cars while thicker lines would detect bigger/closer cars.
 
-Unfortunately, for the sake of processing speed I could not afford to use all of them, so I filtered it based on the results achieved and the above tests and finally came to this windows layout:
+So I started testing my idea using lines with 256 pixels high down to 32 px, by steps of 32 px, and started getting a better picture of what each one could achieve.
+
+Unfortunately, for the sake of processing speed I could not afford to use all of them, so I filtered it based on the results achieved on the above tests and finally came to this windows layout:
 
 - 1 line of 160 px high starting at line y=400
 - 1 line of 96 px high starting at line y=404
 
-I also used a 75% overlay of windows on both lines, since it managed to have a better distinguish false detections (that have a more random behavior) from car detections. On the following image the windows resulting from this description can be seen:
+I also used a 75% overlay of windows on both lines, since it managed to distinguish false detections (that have a more random behavior) from car detections. On the following image the windows resulting from this description can be seen:
 
 ![sliding windows](./writeup_images/sliding_windows.png)
 
-That solution allowed me to get get good enough results that could be bettered with post processing.
+That solution allowed me to get good enough results that could be bettered with post processing.
 
-I used the recommended single HOG feature extraction to make the system faster, so instead of resizing the windows to the training size of 64x64 I did a single resize to the full image using a scaling factor, that in other words will have the same effect but will be achieved in the opposite path.
+I used the recommended single HOG feature extraction for the whole frame to make the system faster. That approach is basically doing the same thing but in the opposite path. So, instead of resizing each window to the training size of 64x64, I did a single resize of the full image to be 64 px high.
 
 Code: line 20 to 40 on the 10th cell, and line 25 on the 7th cell (find_cars_in_image funtion) @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)  
 
@@ -114,13 +116,13 @@ Here's a [link to my video result](./output_image/output_project_video_completed
 
 The thin yellow boxes show the detections out of the classifier. There we can see that some parts of the image can fool the classifier (like guards, mainly metalic ones over bridges, as well as dark traces over the whiter pavement), but since it mostly happens sporadically, using a valid filtering post-processing I managed to discard the majority of those false positives.
 
-The thick red boxes are the tracking results out of the post-processing using spatial and temporal filtering.
+The thick red boxes are the tracking results out of the post-processing using spatial and temporal filtering, and can be considered as the tracking result.
 
-The small green circle represents the center of the tracking box used for updating the motion vector of the detections.
+The small green circle represents the center of the tracking box used for updating the motion vector of the detections (for future improvements).
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-Spatial filtering is used on each frame. The trick was to use a threshold level dependent of the detections (the heatmap had bigger values over the cars with the...). That allowed to achieve a very balanced filtering (avoiding to remove cars or keep to much false positives).
+Spatial filtering is used on each frame. The trick was to use a threshold level dependent of the detections (cars tend to be detected more often so the heatmap over them will have higher values). That allowed to achieve a very balanced filtering (avoiding to remove cars or keep to much false positives). That can be seen at the begining of the video when there is no cars, the lack of references doesn't allow the false detections *cleaning* to happen. But as soon as the white Lexus enters on the right side, the false detections are proportionally less important (lower values in the heatmap), and thus discarded and not considered as a tracking anymore.
 
 Code: line 75 to 95 on the 10th cell @ [vehicleDetection.ipnb](./vehicleDetection.ipnb)
 
@@ -138,7 +140,9 @@ The most tricky parts (besides getting a bug free code when we are working late 
 
 It would have been easy to avoid looking to the left side of the image, but that would create a failure if we move the car to the right lanes (where it should have always been based, at least, on European laws :) ).
 
-An improvement would be to do refined searches on limited small areas of the image where it would be expected to have a car based on the previous images. For that I added a variable (move) on the detection object to store the motion vector calculated from the detection centers from all the consecutive matches.  
+Bigger weaknesses of this system is when the car is passing by metalic guard rails and also tire marks on brighter pavements. That seems to really fool the system, and I believe the solution must be on getting an improved data set, since the detections of those features are longer in time and space, and thus hard to eliminate with both spatial and temporal filtering.
+
+An improvement would be to do refined searches on limited small areas of the image where it would be expected to have a car based on the previous images. For that I added a variable (move) on the detection object to store the motion vector calculated using the detection centers from all the consecutive matches.  
 
 In-line with what is required to stand out, this project was not just about doing a good detection, but also on doing it quite fast. Abusing on sliding windows would make it easier to get a better detection, but that would come at a price that would not justify it anymore.
 
