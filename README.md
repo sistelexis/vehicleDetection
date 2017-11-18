@@ -111,7 +111,9 @@ On the following image one can see the full steps on 8 different images.
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./output_image/output_project_video.mp4)
+Here's a [link to my video result on github](./output_image/output_project_video.mp4) or [this one from youtube](https://youtu.be/4f2-X6OflZ4) (note: github is having issues to upload the video)
+
+https://github.com/sistelexis/vehicleDetection/
 
 The thin yellow boxes show the detections out of the classifier. There we can see that some parts of the image can fool the classifier (like guards, mainly metallic ones over bridges, as well as dark traces over the whiter pavement), but since it mostly happens sporadically, using a valid filtering post-processing I managed to discard the majority of those false positives.
 
